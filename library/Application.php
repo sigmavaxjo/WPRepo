@@ -7,12 +7,17 @@ namespace WPRepo;
  */
 class Application
 {
-    public function run(): bool
+    public function run(): void
     {
-        return (
-            (new Authorizer())->run() &&
-            (new Receiver())->run() &&
-            (new Generator())->run()
-        );
+        header('Content-Type: text/plain; charset=UTF-8');
+
+        try {
+            (new Authorizer())->run();
+            (new Receiver())->run();
+            (new Generator())->run();
+        } catch (WprError $e) {
+            http_response_code($e->getCode());
+            echo $e->getMessage(), PHP_EOL;
+        }
     }
 }

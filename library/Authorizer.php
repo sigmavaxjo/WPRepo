@@ -18,65 +18,47 @@ class Authorizer
     /**
      * Runs all checks.
      */
-    public function run(): bool
+    public function run(): void
     {
-        return (
-            $this->verifyMethod() &&
-            $this->verifyConstants() &&
-            $this->verifyAuthorization()
-        );
+        $this->verifyMethod();
+        $this->verifyConstants();
+        $this->verifyAuthorization();
     }
 
     /**
      * Verifies the request method.
      */
-    protected function verifyMethod(): bool
+    protected function verifyMethod(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            trigger_error('Invalid request method.');
-            http_response_code(400);
-            return false;
+            throw new WprError('Invalid request method.', 400);
         }
-
-        return true;
     }
 
     /**
      * Verifies all constants are set.
      */
-    protected function verifyConstants(): bool
+    protected function verifyConstants(): void
     {
         foreach (self::CONSTANTS as $constant) {
-            if (defined($constant)) {
-                continue;
+            if (!defined($constant)) {
+                throw new WprError("Missing constant: $constant", 500);
             }
-
-            trigger_error("Missing constant: $constant");
-            http_response_code(500);
-            return false;
         }
-
-        return true;
     }
 
     /**
      * Verifies the authorization header.
      */
-    protected function verifyAuthorization(): bool
+    protected function verifyAuthorization(): void
     {
-        $authorization = $_SERVER['HTTP_AUTHORIZATION'];
+        $authorization = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
         $parts = explode(' ', $authorization, 2);
 
         if (!$parts || sizeof($parts) < 2) {
-            trigger_error('Missing HTTP Authorization.');
-            http_response_code(401);
-            return false;
+            throw new WprError('Missing HTTP Authorization.', 401);
         } elseif ($parts[0] !== 'Key' || $parts[1] !== WPR_KEY) {
-            trigger_error('Invalid HTTP Authorization.');
-            http_response_code(403);
-            return false;
+            throw new WprError('Invalid HTTP Authorization.', 403);
         }
-
-        return true;
     }
 }

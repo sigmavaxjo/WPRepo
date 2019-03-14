@@ -14,19 +14,17 @@ class Generator
     /**
      * Runs the generator.
      */
-    public function run(): bool
+    public function run(): void
     {
-        return (
-            $this->createConfig() &&
-            $this->generateRepo() &&
-            $this->deleteConfig()
-        );
+        $this->createConfig();
+        $this->generateRepo();
+        $this->deleteConfig();
     }
 
     /**
      * Writes a configuration file for Satis.
      */
-    protected function createConfig(): bool
+    protected function createConfig(): void
     {
         $config = [
             'name' => 'sigmavaxjo/wprepo',
@@ -51,18 +49,14 @@ class Generator
         fclose($file);
 
         if (!$result) {
-            trigger_error('Failed to write Satis config.');
-            http_response_code(500);
-            return false;
+            throw new WprError('Failed to write Satis config.', 500);
         }
-
-        return true;
     }
 
     /**
      * Generates the repository.
      */
-    protected function generateRepo(): bool
+    protected function generateRepo(): void
     {
         $args = [
             'command' => 'build',
@@ -78,25 +72,19 @@ class Generator
         $status = $satis->run($input, $output);
 
         if ($status !== 0) {
-            trigger_error('Failed to run Satis build.');
-            http_response_code(500);
-            return false;
+            throw new WprError('Failed to run Satis build.', 500);
         }
-
-        return true;
     }
 
     /**
      * Removes the configuration file for Satis.
      */
-    protected function deleteConfig(): bool
+    protected function deleteConfig(): void
     {
         $status = unlink(WPR_CONFIG);
 
         if (!$status) {
-            trigger_error('Failed to remove Satis config.');
+            throw new WprError('Failed to remove Satis config.', 500);
         }
-
-        return true;
     }
 }

@@ -25,7 +25,8 @@ class Receiver
      */
     public function __construct()
     {
-        $srv = new FileUpload($_FILES['files'], $_SERVER);
+        $files = $_FILES['files'] ?? [];
+        $srv = new FileUpload($files, $_SERVER);
 
         $srv->setFileNameGenerator(new Slugifier());
         $srv->setFileSystem(new FileSystem\Simple());
@@ -39,7 +40,7 @@ class Receiver
     /**
      * Processes all files.
      */
-    public function run(): bool
+    public function run(): void
     {
         $changed = false;
 
@@ -47,20 +48,10 @@ class Receiver
 
         foreach ($files as $file) {
             $changed |= $file->completed;
-            $name = $file->getBasename();
-            $error = $file->error;
-
-            if ($error) {
-                trigger_error("File $name: $error");
-            }
         }
 
         if (!$changed) {
-            trigger_error('Received no files.');
-            http_response_code(400);
-            return false;
+            throw new WprError('No valid files.', 400);
         }
-
-        return true;
     }
 }
