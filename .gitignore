@@ -1,0 +1,6 @@
+/artifacts/*
+/public/*
+/vendor/*
+
+/config.php
+!/public/publish.php

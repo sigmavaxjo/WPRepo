@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<ruleset name="sigmavaxjo/wprepo">
+    <rule ref="PSR2"/>
+
+    <file>library</file>
+    <file>public/publish.php</file>
+
+    <arg name="colors"/>
+    <arg name="warning-severity" value="0"/>
+</ruleset>
