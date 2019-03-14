@@ -10,3 +10,8 @@ Composer repository for PHP projects.
 - `WPR_CONFIG`: Temporary file for generated configurations.
 - `WPR_SOURCE`: Directory containing artifact archives.
 - `WPR_TARGET`: Directory of the generated repository.
+
+
+# Configuration Files
+
+- `config.php`: Sets values for custom constants.
