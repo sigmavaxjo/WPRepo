@@ -38,9 +38,32 @@ class Receiver
     }
 
     /**
-     * Processes all files.
+     * Runs the uploader.
      */
     public function run(): void
+    {
+        $this->createDirectory();
+        $this->processFiles();
+    }
+
+    /**
+     * Creates a directory for uploads.
+     */
+    protected function createDirectory(): void
+    {
+        if (!file_exists(WPR_SOURCE)) {
+            mkdir(WPR_SOURCE, 0777, true);
+        }
+
+        if (!is_dir(WPR_SOURCE)) {
+            throw new WprError('Missing upload directory.', 500);
+        }
+    }
+
+    /**
+     * Processes all files.
+     */
+    protected function processFiles(): void
     {
         $changed = false;
 
