@@ -53,12 +53,17 @@ class Authorizer
     protected function verifyAuthorization(): void
     {
         $authorization = $_SERVER['HTTP_AUTHORIZATION'] ?? null;
+
+        if (!$authorization) {
+            throw new WprError('Missing authorization header.', 401);
+        }
+
         $parts = explode(' ', $authorization, 2);
 
-        if (!$parts || sizeof($parts) < 2) {
-            throw new WprError('Missing HTTP Authorization.', 401);
-        } elseif ($parts[0] !== 'Key' || $parts[1] !== WPR_KEY) {
-            throw new WprError('Invalid HTTP Authorization.', 403);
+        if (count($parts) < 2 || $parts[0] !== 'Key') {
+            throw new WprError('Invalid authorization header.', 401);
+        } elseif ($parts[1] !== WPR_KEY) {
+            throw new WprError('Invalid authorization key.', 403);
         }
     }
 }
