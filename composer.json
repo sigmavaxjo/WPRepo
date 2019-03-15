@@ -1,0 +1,21 @@
+{
+    "name": "sigmavaxjo/wprepo",
+    "homepage": "https://github.com/sigmavaxjo/wprepo",
+    "license": "proprietary",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Joakim Soderlund",
+            "email": "joakim.soderlund@sigma.se"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "WPRepo\\": "library"
+        }
+    },
+    "require": {
+        "composer/satis": "^1.0",
+        "gargron/fileupload": "^1.0"
+    }
+}
