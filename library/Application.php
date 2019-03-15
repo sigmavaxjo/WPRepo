@@ -15,6 +15,7 @@ class Application
             (new Authorizer())->run();
             (new Receiver())->run();
             (new Generator())->run();
+            echo 'Success!', PHP_EOL;
         } catch (WprError $e) {
             http_response_code($e->getCode());
             echo $e->getMessage(), PHP_EOL;
