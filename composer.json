@@ -1,7 +1,7 @@
 {
     "name": "sigmavaxjo/wprepo",
     "homepage": "https://github.com/sigmavaxjo/wprepo",
-    "license": "proprietary",
+    "license": "MIT",
     "type": "project",
     "authors": [
         {
