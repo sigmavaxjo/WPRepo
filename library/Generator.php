@@ -17,7 +17,9 @@ class Generator
     public function run(): void
     {
         $this->createConfig();
+        $this->purgeSource();
         $this->generateRepo();
+        $this->purgeTarget();
         $this->deleteConfig();
     }
 
@@ -54,6 +56,27 @@ class Generator
     }
 
     /**
+     * Removes expired source files.
+     */
+    protected function purgeSource(): void
+    {
+        $expire = time() - WPR_EXPIRE;
+        $directory = opendir(WPR_SOURCE);
+
+        if (!$directory) {
+            throw new WprError('Failed to open source directory.', 500);
+        }
+
+        while (false !== ($entry = readdir($directory))) {
+            $path = realpath(WPR_SOURCE . "/$entry");
+
+            if (is_file($path) && filemtime($path) < $expire) {
+                unlink($path);
+            }
+        }
+    }
+
+    /**
      * Generates the repository.
      */
     protected function generateRepo(): void
@@ -63,17 +86,33 @@ class Generator
             'file' => WPR_CONFIG,
         ];
 
-        $input = new ArrayInput($args);
-        $output = new ConsoleOutput();
-        $satis = new Satis();
-
-        $satis->setAutoExit(false);
-
-        $status = $satis->run($input, $output);
+        $status = $this->callSatis($args);
 
         if ($status !== 0) {
             throw new WprError('Failed to run Satis build.', 500);
         }
+    }
+
+    /**
+     * Removes expired target files.
+     */
+    protected function purgeTarget(): void
+    {
+        $args = [
+            'command' => 'purge',
+            'file' => WPR_CONFIG,
+            'output-dir' => WPR_TARGET,
+        ];
+
+        /*
+         * Ignore the status code for now.
+         *
+         * Satis sometimes crashes when removing directories since there
+         * may still be unexpired files in them. This resolves itself in
+         * subsequent calls. The issue must be fixed in Satis before we
+         * can start verifying the status code.
+         */
+        $this->callSatis($args);
     }
 
     /**
@@ -86,5 +125,19 @@ class Generator
         if (!$status) {
             throw new WprError('Failed to remove Satis config.', 500);
         }
+    }
+
+    /**
+     * Calls the Satis application.
+     */
+    protected function callSatis($args): int
+    {
+        $input = new ArrayInput($args);
+        $output = new ConsoleOutput();
+        $satis = new Satis();
+
+        $satis->setAutoExit(false);
+
+        return $satis->run($input, $output);
     }
 }
