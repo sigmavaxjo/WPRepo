@@ -8,6 +8,7 @@ Composer repository for PHP projects.
 - `WPR_KEY`: Authorization key for publishing.
 - `WPR_HOST`: URL to the generated repository.
 - `WPR_CONFIG`: Temporary file for generated configurations.
+- `WPR_EXPIRE`: Number of seconds to keep an artifact.
 - `WPR_SOURCE`: Directory containing artifact archives.
 - `WPR_TARGET`: Directory of the generated repository.
 

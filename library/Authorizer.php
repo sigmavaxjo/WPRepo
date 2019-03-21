@@ -11,6 +11,7 @@ class Authorizer
         'WPR_KEY',
         'WPR_HOST',
         'WPR_CONFIG',
+        'WPR_EXPIRE',
         'WPR_SOURCE',
         'WPR_TARGET',
     ];
