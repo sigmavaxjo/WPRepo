@@ -20,7 +20,6 @@ class Generator
         $this->purgeSource();
         $this->generateRepo();
         $this->purgeTarget();
-        $this->deleteConfig();
     }
 
     /**
@@ -44,7 +43,8 @@ class Generator
             ],
         ];
 
-        $encoded = json_encode($config);
+        $encoded = json_encode($config, JSON_PRETTY_PRINT);
+
         $file = fopen(WPR_CONFIG, 'w');
         $result = fwrite($file, $encoded);
 
@@ -113,18 +113,6 @@ class Generator
          * can start verifying the status code.
          */
         $this->callSatis($args);
-    }
-
-    /**
-     * Removes the configuration file for Satis.
-     */
-    protected function deleteConfig(): void
-    {
-        $status = unlink(WPR_CONFIG);
-
-        if (!$status) {
-            throw new WprError('Failed to remove Satis config.', 500);
-        }
     }
 
     /**
