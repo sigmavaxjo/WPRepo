@@ -4,7 +4,7 @@ namespace WPRepo;
 
 use Composer\Satis\Console\Application as Satis;
 use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\StreamOutput;
 
 /**
  * Generates a Composer repository using Satis.
@@ -134,12 +134,21 @@ class Generator
      */
     protected function callSatis($args): int
     {
+        $stream = fopen(WPR_LOG, 'a');
+
+        if ($stream === false) {
+            throw new WprError('Failed to open log file.', 500);
+        }
+
         $input = new ArrayInput($args);
-        $output = new ConsoleOutput();
+        $output = new StreamOutput($stream);
         $satis = new Satis();
 
         $satis->setAutoExit(false);
+        $status = $satis->run($input, $output);
 
-        return $satis->run($input, $output);
+        fclose($stream);
+
+        return $status;
     }
 }

@@ -4,6 +4,7 @@ $root = realpath(dirname(__DIR__));
 
 require_once "$root/vendor/autoload.php";
 
+define('WPR_LOG', 'php://stdout');
 define('WPR_CACHE', "$root/cache");
 define('WPR_CONFIG', "$root/satis.json");
 define('WPR_EXPIRE', 365 * 24 * 60 * 60);
