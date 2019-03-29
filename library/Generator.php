@@ -105,6 +105,17 @@ class Generator
         ];
 
         /*
+         * Purge doesn't work on Windows.
+         *
+         * Satis will remove all of the generated archives when running
+         * the purge command on Windows. This will have to be fixed in
+         * Satis, and will until then require manual periodic clean-up.
+         */
+        if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') {
+            return;
+        }
+
+        /*
          * Ignore the status code for now.
          *
          * Satis sometimes crashes when removing directories since there
