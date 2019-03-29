@@ -10,6 +10,7 @@ class Authorizer
     const CONSTANTS = [
         'WPR_KEY',
         'WPR_HOST',
+        'WPR_CACHE',
         'WPR_CONFIG',
         'WPR_EXPIRE',
         'WPR_SOURCE',

@@ -32,6 +32,9 @@ class Generator
             'homepage' => WPR_HOST,
             'output-dir' => WPR_TARGET,
             'require-all' => true,
+            'config' => [
+                'cache-dir' => WPR_CACHE,
+            ],
             'repositories' => [
                 [
                     'type' => 'artifact',
